@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*::-webkit-scrollbar {
+  width: 0.7vw;
+}
+
+
+*::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+
+.navbar-icon {
+  @apply w-6 h-6;
+}
+
+.my-input,
+.my-textarea {
+  @apply mb-2 w-full rounded-sm border border-gray-300 py-1 px-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-sky-400;
+}
+
+.required:after {
+  content: " *required";
+  color: red;
+}
+
+.navbar-toggler {
+  @apply fixed right-[7%] top-[2%] z-[10000];
+}
+
+h1 {
+  @apply mb-2 text-xl font-bold text-gray-700;
+}
+
+label {
+  @apply text-gray-700;
+}
+
+table {
+  @apply w-full shadow-xl mt-4;
+}
+
+thead {
+  @apply text-sm text-gray-700 uppercase border border-gray-300;
+}
+
+th, td{
+  @apply p-1 border border-gray-300;
+}
+
+th {
+  @apply text-left;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-1 rounded-md border border-gray-500 bg-white px-4 py-2 text-sm font-medium leading-5 text-gray-900 transition duration-150 ease-in-out hover:text-gray-500 focus:border-gray-200 focus:outline-none active:bg-gray-50 active:text-gray-800;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-1 rounded-md border border-red-600 bg-white px-4 py-2 text-sm font-medium leading-5 text-red-700 transition duration-150 ease-in-out hover:text-red-500 focus:border-red-300 focus:outline-none active:bg-red-50 active:text-red-800;
+}
+
