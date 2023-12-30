@@ -36,7 +36,7 @@ const Navbar = ({ isOpen }) => {
     <aside
       className={
         (isOpen ? "top-0" : "-top-full") +
-        " absolute z-[9999] h-full w-full bg-gray-200 p-3 transition-all duration-150 ease-in-out md:w-auto md:static" 
+        " absolute h-full w-full bg-gray-200 p-3 transition-all duration-150 ease-in-out md:w-auto md:static" 
       }
     >
       <Link
