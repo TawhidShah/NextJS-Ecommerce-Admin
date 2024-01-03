@@ -1,10 +1,12 @@
 import axios from "axios";
-import { BsUpload } from "react-icons/bs";
+import { BsTrash, BsUpload } from "react-icons/bs";
+import { LuInfo } from "react-icons/lu";
 import { FadeLoader } from "react-spinners";
 import { ReactSortable } from "react-sortablejs";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { Tooltip } from "react-tooltip";
 
 const ProductForm = ({
   _id,
@@ -125,6 +127,10 @@ const ProductForm = ({
     }
   };
 
+  ///////////////////////
+  ///////Images/////////
+  //////////////////////
+
   const uploadImages = async (e) => {
     const files = e.target?.files;
     if (files) {
@@ -133,7 +139,7 @@ const ProductForm = ({
       for (let i = 0; i < files.length; i++) {
         formData.append("files", files[i]);
       }
-      const res = await axios.post("/api/uploadImages", formData);
+      const res = await axios.post("/api/images/uploadImages", formData);
       const updatedImages = res.data.links;
       setFormImages((old) => {
         return [...old, ...updatedImages];
@@ -144,6 +150,19 @@ const ProductForm = ({
 
   const updateImageOrder = (newOrder) => {
     setFormImages(newOrder);
+  };
+
+  const handleDeleteImage = async (fileName, imgLink) => {
+    try {
+      await axios.delete(`/api/images/${fileName}`);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+
+    setFormImages((old) => {
+      return old.filter((img) => img !== imgLink);
+    });
   };
 
   ///////////////////////
@@ -252,14 +271,27 @@ const ProductForm = ({
       </label>
       <textarea
         id="productDescription"
-        className="my-textarea h-40"
+        className="my-textarea h-40 "
         placeholder="Description"
         value={formDescription}
         onChange={(e) => setFormDescription(e.target.value)}
       ></textarea>
 
       {/* PRODUCT IMAGES */}
-      <label>Photos</label>
+      <label className="flex items-center">
+        Photos
+        <LuInfo className="inline-block ml-1" data-tooltip-id="photosTooltip" />
+      </label>
+      <Tooltip id="photosTooltip" place="right" effect="solid" className="z-[1000000]">
+        <div>
+          <strong>Photo Actions:</strong>
+          <ul>
+            <li>Click: Open image in a new tab</li>
+            <li>Click and drag: Reorder images</li>
+            <li>Click trash icon: Delete image</li>
+          </ul>
+        </div>
+      </Tooltip>
       <div className="mb-2 flex flex-wrap">
         <ReactSortable
           list={formImages}
@@ -268,18 +300,31 @@ const ProductForm = ({
         >
           {formImages &&
             formImages.map((imgLink) => {
+              const fileName = imgLink.split("/").pop(); // Extract fileName from URL
               return (
-                <img
+                <div
                   key={imgLink}
-                  src={imgLink}
-                  className="mb-2 mr-2 h-24 w-24 rounded-md border object-cover shadow-lg"
-                />
+                  className="relative mb-2 mr-2 h-24 w-24 rounded-md border border-gray-300 object-cover shadow-xl"
+                >
+                  <img
+                    src={imgLink}
+                    className="cursor-grab rounded-md object-cover"
+                    onClick={() => window.open(imgLink, "_blank")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteImage(fileName, imgLink)}
+                    className="absolute right-1 top-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-gray-500 bg-opacity-50 text-xs text-white hover:bg-gray-700"
+                  >
+                    <BsTrash />
+                  </button>
+                </div>
               );
             })}
         </ReactSortable>
         {isUploading && (
           <div className="flex h-24 w-24 items-center justify-center rounded-md border">
-            <FadeLoader color={"#0ea5e9"} />
+            <FadeLoader color={"##0ea5e9"} />
           </div>
         )}
         <div className="mb-2">

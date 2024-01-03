@@ -3,9 +3,13 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import mime from "mime-types";
-import { isAdminReq } from "./auth/[...nextauth]";
+import { isAdminReq } from "../auth/[...nextauth]";
 
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
   await isAdminReq(req, res);
 
   const form = new multiparty.Form();
@@ -26,7 +30,7 @@ export default async function handler(req, res) {
 
   const links = [];
   for (const file of files.files) {
-    const fileName = `${uuidv4()}-${file.originalFilename}`;
+    const fileName = `${file.originalFilename}-${uuidv4()}`;
 
     await client.send(
       new PutObjectCommand({
